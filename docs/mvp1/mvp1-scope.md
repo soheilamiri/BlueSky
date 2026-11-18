@@ -61,7 +61,7 @@ One contract holder is supported per contract.
 - Resident membership request.
 - Contract ID verification by Building Administrator.
 - Membership approval and rejection.
-- Membership revocation when the associated contract expires or is revoked.
+- Building access is removed when the associated contract expires or is revoked. Whether membership status automatically changes to Revoked remains an open decision.
 
 Registration and building membership are separate processes.
 
