@@ -50,7 +50,7 @@ MVP1 supports exactly one Building Administrator per building.
 - Accesses resident-visible details of master requests to which they become linked through duplicate merging.
 - Adds supplementary information to requests.
 
-One contract holder is supported per contract.
+Each contract has exactly one contract holder. One resident account may hold multiple contracts.
 
 ## 4. In-scope features
 
@@ -61,7 +61,7 @@ One contract holder is supported per contract.
 - Resident membership request.
 - Contract ID verification by Building Administrator.
 - Membership approval and rejection.
-- Building access is removed when the associated contract expires or is revoked. Whether membership status automatically changes to Revoked remains an open decision.
+- Contract expiry or revocation immediately removes building access. The Approved membership record remains as historical status; access checks also require an eligible active contract.
 
 Registration and building membership are separate processes.
 
@@ -95,18 +95,21 @@ A common-area request does not require an apartment reference.
 Residents can submit requests containing:
 - Description
 - Category
-- Problem location
-- Optional photo attachments (zero or more photos)
+- Exactly one problem location
+- Zero to five optional photo attachments, each no larger than 10 MB (JPEG, PNG, or WebP)
 
 Requests can concern:
-- Their apartment or private area.
+- The resident's own contracted apartment/private area.
 - Common areas such as corridors, elevators, staircases, parking areas, and building entrances.
+
+Residents cannot report problems inside another resident's private apartment in MVP1.
 
 A common-area request does not require an apartment number.
 
 Building Administrators can:
 - Review requests.
 - Approve or reject requests.
+- Merge duplicates while the duplicate request is not Resolved or Rejected.
 - Provide a rejection reason.
 - Assign and change priority.
 - Update request status.
@@ -129,7 +132,9 @@ Building Administrators can create, edit, enable, disable, and reorder categorie
 Historical requests retain their original category information.
 
 ### 4.5 Notifications and audit
-MVP1 includes maintenance-related notifications and audit records for important administrative and workflow actions.
+MVP1 sends maintenance-related email notifications for request submission, approval or rejection, priority changes, work starting, duplicate merging, and resolution. The in-app request history remains the authoritative record. Audit records are retained for important administrative and workflow actions.
+
+Residents cannot cancel requests, and administrators cannot reopen resolved requests in MVP1. A recurring problem must be submitted as a new request.
 
 Internal notes must never be visible to residents.
 
@@ -167,8 +172,8 @@ MVP1 is functionally ready when:
 9. Building Administrator can approve or reject membership.
 10. Approved residents can submit maintenance requests.
 11. Every maintenance request has exactly one reported problem location; common-area requests do not require an apartment reference.
-12. Residents can submit maintenance requests without photos and may attach one or more photos when available.
-13. Building Administrator can manage request status and priority.
+12. Residents can submit maintenance requests without photos or attach up to five JPEG, PNG, or WebP photos, each no larger than 10 MB.
+13. Building Administrator can manage request status and priority; requests cannot be cancelled by residents or reopened after resolution.
 14. Rejected requests require a reason.
 15. Duplicate requests can be merged without losing history.
 16. Residents cannot access other residents' identities, contact information,
@@ -178,6 +183,13 @@ through duplicate merging.
 17. Internal notes remain administrator-only.
 18. Relevant notifications and audit records are generated.
 19. Critical business rules and authorization boundaries have automated tests.
+20. A resident account can hold multiple contracts, but each contract has exactly one holder.
+21. Residents can report only their own private apartment or common areas.
+22. Duplicate requests can be merged only before they are Resolved or Rejected.
+23. Resolved and Rejected requests are terminal; residents cannot cancel requests.
+24. Resolution photos are optional.
+25. The system enforces a maximum of five photos per submission and 10 MB per photo, accepting JPEG, PNG, and WebP.
+26. Maintenance lifecycle notifications are sent by email for the approved event set.
 
 ## 7. Scope management
 
