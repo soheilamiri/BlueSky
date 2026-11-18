@@ -277,18 +277,9 @@ Production secrets must never be committed to Git.
 
 ### Unit tests
 - Business rules.
-- Request status transitions.
 - Contract rules.
 - Membership rules.
-
-- A linked resident can access master-request details.
-- An unlinked resident cannot access master-request details.
-- A linked resident cannot access another resident's duplicate submission.
-- Master attachment access is independently authorized.
-- Duplicate-request attachment access is independently restricted.
-- Internal notes cannot be retrieved through shared request access.
-- Concurrent membership approval cannot create multiple Approved
-  memberships for the same Contract ID.
+- Request status transitions once the transition matrix is approved.
 
 ### Integration tests
 - PostgreSQL constraints.
@@ -301,10 +292,17 @@ Production secrets must never be committed to Git.
 - Building isolation.
 - Resident request ownership.
 
-### Security tests
+### Security and authorization tests
 - Cross-building access attempts.
-- Access to another resident's requests.
-- Internal note exposure.
+- Access to another resident's private requests.
+- A linked resident can access resident-visible master-request details.
+- An unlinked resident cannot access master-request details.
+- A linked resident cannot access another resident's duplicate submission.
+- Master attachment access is independently authorized.
+- Duplicate-request attachment access is independently restricted.
+- Internal notes cannot be retrieved through shared request access.
+- Concurrent membership approval cannot create multiple Approved
+  memberships for the same Contract ID.
 - Unauthorized attachment retrieval.
 
 ### End-to-end tests
