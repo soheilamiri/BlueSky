@@ -91,7 +91,7 @@ Residents can submit requests containing:
 - Description
 - Category
 - Problem location
-- One or more photos
+- Optional photo attachments (zero or more photos)
 
 Requests can concern:
 - Their apartment or private area.
@@ -161,7 +161,7 @@ MVP1 is functionally ready when:
 8. Residents can request membership using a Contract ID.
 9. Building Administrator can approve or reject membership.
 10. Approved residents can submit maintenance requests.
-11. Residents can attach photos to requests.
+11. 11. Residents can submit maintenance requests without photos and may attach one or more photos when available.
 12. Building Administrator can manage request status and priority.
 13. Rejected requests require a reason.
 14. Duplicate requests can be merged without losing history.

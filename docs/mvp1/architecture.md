@@ -190,11 +190,13 @@ Can perform platform-level building provisioning and administrator assignment.
 Can manage only the assigned building.
 
 ### Resident
-Can access only approved building functionality and their own private request data, except for explicitly permitted shared progress.
+### Resident
+Can access approved building functionality, their own private request data,
+and all resident-visible details of master requests to which they are linked
+through duplicate merging.
 
-Backend authorization is mandatory. Hiding frontend buttons is not sufficient.
-
-Every request and attachment retrieval must be authorized on the server.
+Residents must not access other residents' identities, contact information,
+duplicate request submissions, internal notes, or audit records.
 
 ## 9. API design
 

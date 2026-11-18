@@ -20,6 +20,10 @@
 | BR-003 | Platform Administrator manually creates buildings and assigns administrators. | Confirmed |
 | BR-004 | Self-service building creation is excluded. | Confirmed |
 | BR-005 | Sub-administrators, delegation, and additional building staff roles are excluded. | Confirmed |
+| BR-006 | A building must have exactly one active Building Administrator assignment. | Confirmed |
+| BR-007 | A Building Administrator replacement must close the previous assignment and create the new assignment atomically. | Confirmed |
+| BR-008 | Historical administrator assignments must be retained with their effective dates. | Confirmed |
+| BR-009 | Two Building Administrator assignments for the same building must never overlap. | Confirmed |
 
 ## 3. Building structure and assets
 
@@ -53,7 +57,10 @@
 | BR-031 | Contract expiry or revocation removes associated building access. | Confirmed |
 | BR-032 | The user account may remain active after membership revocation. | Confirmed |
 | BR-033 | National ID collection is not a default MVP1 requirement. | Confirmed |
-
+| BR-034 | A Contract ID may have at most one Approved membership at a time. | Confirmed |
+| BR-035 | Rejected and revoked membership attempts must be retained as historical records. | Confirmed |
+| BR-036 | Multiple historical membership attempts may reference the same Contract ID. | Confirmed |
+| BR-037 | An existing Approved membership prevents another membership for the same Contract ID from being approved. | Confirmed |
 ## 5. Maintenance requests
 
 | ID | Business rule | Status |
@@ -74,7 +81,7 @@
 | BR-053 | Supplementary updates preserve author and timestamp. | Confirmed |
 | BR-054 | Building Administrator can add internal notes. | Confirmed |
 | BR-055 | Internal notes are never visible to residents. | Confirmed |
-
+| BR-056 | Every maintenance request must have exactly one reported problem location. | Confirmed |
 ## 6. Request status and merging
 
 Current status vocabulary:
@@ -95,11 +102,11 @@ Current status vocabulary:
 | BR-063 | Original request IDs and histories are preserved. | Confirmed |
 | BR-064 | Original attachments remain associated with their submissions. | Confirmed |
 | BR-065 | Merged is a terminal state for a duplicate request. | Confirmed |
-| BR-066 | Relevant master progress is shared with affected residents. | Confirmed |
-| BR-067 | Other residents' names, contact details, descriptions, and photos remain private. | Confirmed |
-| BR-068 | Circular merges must be prevented. | Confirmed |
-| BR-069 | Reopening resolved requests is not yet decided. | Open |
-| BR-070 | Resident cancellation is not yet decided. | Open |
+| BR-066 | All resident-visible details of a master request are shared with every resident linked to that master through a duplicate merge. | Confirmed |
+| BR-067 | Shared master-request details include its original description, photos, status, priority, shared updates, and resolution details. | Confirmed |
+| BR-071 | Master-request submitter identity and contact information remain private to other residents. | Confirmed |
+| BR-072 | Original descriptions, photos, and updates belonging to duplicate requests remain private to their respective submitters and authorized administrators. | Confirmed |
+| BR-073 | Internal notes, audit records, and security metadata are never visible to residents through shared request access. | Confirmed |
 
 ## 7. Maintenance categories
 

@@ -123,8 +123,20 @@ A membership must reference a contract associated with an apartment in the selec
 
 The attachment model must preserve the original report association after a merge.
 
-A separate privacy-safe shared-progress representation may be needed so residents can see common progress without accessing another resident's private report or attachments.
+### Shared master-request access
 
+- Residents linked to a master request through duplicate merging can access
+  all resident-visible details of that master request.
+- Shared details include the master description, master attachments,
+  status, priority, shared updates, and resolution details.
+- Master submitter identity and contact information must remain private.
+- Duplicate request descriptions, attachments, and updates remain private
+  to their respective submitters and authorized administrators.
+- Internal notes, audit records, and security metadata remain administrator-only.
+- Backend authorization must determine whether a resident is linked to
+  the master request before returning shared details or attachments.
+
+  
 ## 5. Important database constraints
 
 ### Contract and apartment
@@ -145,13 +157,17 @@ WHERE status = 'Active';
 
 This example assumes the final schema uses a status column with the value `Active`. The migration must match the implemented status model and have an integration test.
 
-### Parking and storage
+### Building Administrator assignment
 
-- Assignment relationships are optional.
-- Assignment history must be preserved.
-- ParkingSpace and StorageUnit belong to a Building.
-- Validate that assigned assets belong to the same building as the contract's apartment.
-- Exclusive active assignment is still an open business decision.
+- Each provisioned building must have exactly one active Building Administrator.
+- Administrator assignment history must be preserved.
+- Every assignment must record EffectiveFrom and EffectiveTo.
+- The active assignment has no EffectiveTo value.
+- Assignment periods for the same building must not overlap.
+- Replacing an administrator must close the previous assignment and create
+  the new assignment in one database transaction.
+- MVP1 does not support multiple active administrators, delegation,
+  or temporary overlapping assignments.
 
 ### Building Administrator
 
@@ -165,6 +181,15 @@ This example assumes the final schema uses a status column with the value `Activ
 - Contract must resolve to an apartment in the same Building.
 - Only the authorized Building Administrator can approve or reject.
 - Duplicate active memberships must be prevented according to the final membership lifecycle rules.
+### Membership uniqueness
+
+- Multiple historical membership records may reference the same Contract.
+- A Contract may have at most one Approved membership at a time.
+- Rejected and Revoked records must be preserved.
+- A new membership may be approved after the previous Approved membership
+  has been revoked, provided the Contract remains eligible.
+- The system must prevent concurrent approval of multiple memberships
+  for the same Contract.
 
 ### Maintenance privacy
 

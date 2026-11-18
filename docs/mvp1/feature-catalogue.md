@@ -35,9 +35,8 @@
 | F-017 | Membership revocation | Remove access after contract expiry/revocation | Must | System/Admin |
 | F-018 | Default categories | Provide initial maintenance categories | Must | System |
 | F-019 | Category management | Create, edit, enable, disable, reorder | Must | Building Admin |
-| F-020 | Request submission | Submit description, category, location, photos | Must | Resident |
-| F-021 | Request location | Support private and common-area locations | Must | Resident |
-| F-022 | Photo upload | Upload multiple photos | Must | Resident |
+| F-020 | Request submission | Submit description, category, exactly one location, and optional photos | Must | Resident |
+| F-021 | Request location | Require exactly one private-area or common-area problem location per request | Must | Resident || F-022 | Photo upload | Optionally upload multiple photos to a request | Must | Resident |
 | F-023 | Request review | Review submitted requests | Must | Building Admin |
 | F-024 | Request approval/rejection | Approve or reject with reason | Must | Building Admin |
 | F-025 | Priority management | Assign and change priority | Must | Building Admin |
@@ -46,7 +45,7 @@
 | F-028 | Internal notes | Add private administrator notes | Must | Building Admin |
 | F-029 | Resolution | Record resolution and resolve request | Must | Building Admin |
 | F-030 | Duplicate merging | Merge duplicates while preserving history | Must | Building Admin |
-| F-031 | Shared progress | Share permitted progress without private data | Must | System |
+| F-031 | Shared master request | Share all resident-visible details of the master request with residents linked through duplicate merging, while protecting identities, duplicate submissions, internal notes, and audit data | Must | System |
 | F-032 | Notifications | Send request-related notifications | Must | System |
 | F-033 | Audit history | Record important administrative actions | Must | System |
 | F-034 | Building authorization | Enforce building-level data isolation | Supporting | System |
@@ -71,6 +70,14 @@
 | X-009 | Household accounts | One contract holder per contract |
 
 ## 4. Critical acceptance criteria
+- Every resident linked to a merged request can access all resident-visible
+  details of the master request.
+- The master request's original description and photos are visible to
+  linked residents.
+- The identities and contact information of other residents remain private.
+- Original descriptions, photos, and updates from duplicate requests remain
+  private to their respective submitters and authorized administrators.
+- Internal notes and audit records are never exposed through shared access.
 
 ### Identity and membership
 - An unverified email cannot complete membership activation.
@@ -93,6 +100,11 @@
 - Internal notes are never exposed through resident APIs or notifications.
 - Merging preserves original request IDs, histories, and attachments.
 - Shared progress must not expose other residents' private information.
+- A Contract ID cannot have more than one Approved membership at a time.
+- Rejected and revoked membership attempts remain available for authorized
+  administrative review.
+- A historical rejected or revoked membership does not, by itself, prevent
+  a later eligible membership from being approved.
 
 ## 5. Open feature details
 
