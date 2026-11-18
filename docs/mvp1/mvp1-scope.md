@@ -47,7 +47,7 @@ MVP1 supports exactly one Building Administrator per building.
 - Requests membership using building and Contract ID information.
 - Submits maintenance requests.
 - Tracks their own maintenance requests.
-- Accesses resident-visible details of master requests to which they become linked through uplicate merging.
+- Accesses resident-visible details of master requests to which they become linked through duplicate merging.
 - Adds supplementary information to requests.
 
 One contract holder is supported per contract.
@@ -166,17 +166,18 @@ MVP1 is functionally ready when:
 8. Residents can request membership using a Contract ID.
 9. Building Administrator can approve or reject membership.
 10. Approved residents can submit maintenance requests.
-11. Residents can submit maintenance requests without photos and may attach one or more photos when available.
-12. Building Administrator can manage request status and priority.
-13. Rejected requests require a reason.
-14. Duplicate requests can be merged without losing history.
-15. Residents cannot access other residents' identities, contact information,
+11. Every maintenance request has exactly one reported problem location; common-area requests do not require an apartment reference.
+12. Residents can submit maintenance requests without photos and may attach one or more photos when available.
+13. Building Administrator can manage request status and priority.
+14. Rejected requests require a reason.
+15. Duplicate requests can be merged without losing history.
+16. Residents cannot access other residents' identities, contact information,
 or private duplicate-request submissions. They can access the
 resident-visible details of master requests to which they are linked
 through duplicate merging.
-16. Internal notes remain administrator-only.
-17. Relevant notifications and audit records are generated.
-18. Critical business rules and authorization boundaries have automated tests.
+17. Internal notes remain administrator-only.
+18. Relevant notifications and audit records are generated.
+19. Critical business rules and authorization boundaries have automated tests.
 
 ## 7. Scope management
 
