@@ -54,15 +54,15 @@
 | BR-028 | Contract ID must be verified against management records. | Confirmed |
 | BR-029 | Contract ID alone does not grant building access. | Confirmed |
 | BR-030 | Membership statuses are Pending, Approved, Rejected, and Revoked. | Confirmed |
-BR-031 | Building access requires both an Approved membership and an eligible contract. Contract expiry or revocation removes building access. | Confirmed |
+| BR-031 | Building access requires both an Approved membership and an eligible contract. Contract expiry or revocation removes building access. | Confirmed |
 | BR-032 | The user account may remain active after membership revocation. | Confirmed |
 | BR-033 | National ID collection is not a default MVP1 requirement. | Confirmed |
 | BR-034 | A Contract ID may have at most one Approved membership at a time. | Confirmed |
 | BR-035 | Rejected and revoked membership attempts must be retained as historical records. | Confirmed |
 | BR-036 | Multiple historical membership attempts may reference the same Contract ID. | Confirmed |
-BR-037 | The system must enforce at most one Approved membership per Contract ID, including during concurrent approval attempts. | Confirmed |
+| BR-037 | The system must enforce at most one Approved membership per Contract ID, including during concurrent approval attempts. | Confirmed |
 
-- Does contract expiry automatically change an Approved membership
+**Open decision:** Does contract expiry automatically change an Approved membership
   to Revoked, or does the membership remain Approved while access
   is denied based on contract eligibility?
 ## 5. Maintenance requests
@@ -111,7 +111,7 @@ Current status vocabulary:
 | BR-064 | Original attachments remain associated with their submissions. | Confirmed |
 | BR-065 | Merged is a terminal state for a duplicate request. | Confirmed |
 | BR-066 | All resident-visible details of a master request are shared with every resident linked to that master through a duplicate merge. | Confirmed |
-BR-067 | Shared master-request details include its original description, original photos, status, priority, resident-visible master updates, and resolution details. | Confirmed |
+| BR-067 | Shared master-request details include its original description, original photos, status, priority, resident-visible master updates, and resolution details. | Confirmed |
 | BR-068 | Only resident-visible updates belonging to the master request are shared with linked residents. | Confirmed |
 | BR-069 | Updates belonging to duplicate requests remain private to their respective submitters and authorized administrators. | Confirmed |
 | BR-070 | Internal notes are never shared with residents, including residents linked through duplicate merging. | Confirmed |
@@ -121,25 +121,16 @@ BR-067 | Shared master-request details include its original description, origina
 
 ### Status transition rules
 
-The following status transitions must be explicitly defined and
-validated by the backend.
+The status vocabulary is confirmed, but the allowed transition matrix is
+not yet approved. Do not infer transition permissions from the status list.
 
-| Current status | Possible next status | Decision |
-|---|---|---|
-| Submitted | Under Review | Confirmed |
-| Under Review | Approved | Confirmed |
-| Under Review | Rejected | Confirmed |
-| Approved | In Progress | Confirmed |
-| In Progress | Resolved | Confirmed |
-| Submitted | Merged | Requires decision |
-| Under Review | Merged | Requires decision |
-| Approved | Merged | Requires decision |
-| In Progress | Merged | Requires decision |
-| Resolved | In Progress | Open |
-| Rejected | Approved | Open |
+**Open:** Define allowed transitions for Submitted, Under Review, Approved,
+In Progress, Resolved, Rejected, and Merged, including cancellation,
+reopening, and the states from which a request may be merged.
 
-A Merged request is terminal and cannot be independently reopened
-or processed as a normal maintenance request.
+A Merged request is terminal for the duplicate record; the exact merge
+eligibility rules for source statuses remain open.
+
 ## 7. Maintenance categories
 
 | ID | Business rule | Status |
