@@ -26,9 +26,7 @@ The model must preserve confirmed business rules and explicitly identify unresol
 
 ## 3. Entity relationship diagram
 
-The diagram uses Mermaid ER notation. User-to-Contract cardinality remains
-provisional because the decision on whether one user may hold multiple
-contracts has not yet been finalized.
+The diagram uses Mermaid ER notation. One User may hold zero or more Contracts; each Contract has exactly one holder.
 
 ```mermaid
 erDiagram
@@ -102,11 +100,9 @@ if multiple issuers can use overlapping Contract IDs.
 The uniqueness constraint must cover the combination of issuer
 and Contract ID, unless global uniqueness is explicitly adopted.
 
-**Open:** Whether a User may hold multiple contracts.
+A User may hold multiple contracts. Each Contract has exactly one holder.
 
-**Open:** Whether one parking space or storage unit may be assigned to multiple active contracts at the same time.
-
-Do not implement an exclusive asset-assignment constraint until the latter rule is decided.
+Whether one parking space or storage unit may be assigned to multiple active contracts remains deferred. Do not add an exclusivity constraint until that policy is decided.
 
 ### 4.3 Membership
 
@@ -272,14 +268,11 @@ Prefer archival or status changes over destructive deletion when historical acti
 
 ## 9. Physical schema decisions still open
 
-1. Can one User hold multiple Contracts?
-2. Can parking and storage assets have overlapping active assignments?
-3. Should Contract holder be stored directly on Contract or through a separate party relationship?
-4. What are the exact Contract and Membership status transitions?
-5. Should RequestLocation use nullable foreign keys or a location subtype model?
-6. How should notification delivery attempts be tracked?
-7. What is the audit event payload format?
-8. Does shared maintenance progress require a separate entity from private RequestUpdate?
+1. Can parking and storage assets have overlapping active assignments?
+2. What are the exact data and audit retention periods?
+3. Which email provider will be used?
+
+The remaining items are technical implementation choices. They will be resolved in the physical schema and application design without reopening approved MVP1 product decisions.
 
 Resolve these questions before finalizing the relevant migrations. Do not over-engineer the schema to anticipate unapproved features.
 
