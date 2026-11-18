@@ -125,8 +125,7 @@ Current status vocabulary:
 
 ### Status transition rules
 
-The status vocabulary is confirmed, but the allowed transition matrix is
-not yet approved. Do not infer transition permissions from the status list.
+The following MVP1 lifecycle constraints are confirmed. Other status changes must be implemented only through the defined administrator workflow operations, not arbitrary client updates.
 
 **Confirmed MVP1 transition constraints:**
 - Duplicate requests may be merged only from Submitted, Under Review, Approved, or In Progress.
