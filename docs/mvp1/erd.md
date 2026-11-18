@@ -26,18 +26,19 @@ The model must preserve confirmed business rules and explicitly identify unresol
 
 ## 3. Entity relationship diagram
 
-~~~mermaid
+The diagram uses Mermaid ER notation. User-to-Contract cardinality remains
+provisional because the decision on whether one user may hold multiple
+contracts has not yet been finalized.
+
+```mermaid
 erDiagram
     USER ||--o{ BUILDING_ADMIN_ASSIGNMENT : assigned_as
-    BUILDING ||--|| BUILDING_ADMIN_ASSIGNMENT : has
+    BUILDING ||--o{ BUILDING_ADMIN_ASSIGNMENT : has_history
     BUILDING ||--o{ FLOOR : contains
     FLOOR ||--o{ APARTMENT : contains
 
     APARTMENT ||--o{ CONTRACT : contract_history
     USER ||--o{ CONTRACT : holds
-The User-to-Contract cardinality remains provisional because the
-business decision on whether one user may hold multiple contracts
-has not yet been finalized.
 
     CONTRACT ||--o{ CONTRACT_PARKING_ASSIGNMENT : includes
     PARKING_SPACE ||--o{ CONTRACT_PARKING_ASSIGNMENT : assigned_through
@@ -54,7 +55,7 @@ has not yet been finalized.
     USER ||--o{ MAINTENANCE_REQUEST : submits
     MAINTENANCE_CATEGORY ||--o{ MAINTENANCE_REQUEST : classifies
 
-    MAINTENANCE_REQUEST ||--o{ REQUEST_LOCATION : has
+    MAINTENANCE_REQUEST ||--|| REQUEST_LOCATION : has_exactly_one
     MAINTENANCE_REQUEST ||--o{ REQUEST_ATTACHMENT : has
     MAINTENANCE_REQUEST ||--o{ REQUEST_UPDATE : has
     MAINTENANCE_REQUEST ||--o{ INTERNAL_NOTE : has
@@ -62,7 +63,7 @@ has not yet been finalized.
 
     USER ||--o{ NOTIFICATION : receives
     USER ||--o{ AUDIT_EVENT : performs
-~~~
+```
 
 The diagram is conceptual. The physical schema may require additional reference entities, indexes, and constraints.
 
@@ -124,7 +125,7 @@ A membership must reference a contract associated with an apartment in the selec
 | MaintenanceCategory | Building-specific category | Id, BuildingId, Name, Description, IsEnabled, SortOrder |
 | MaintenanceRequest | Resident's maintenance report | Id, BuildingId, SubmittedByUserId, CategoryId, Status, Priority, Description, SubmittedAt |
 | RequestLocation | Problem location | Id, RequestId, LocationType, FloorId, ApartmentId, Details |
-|RequestAttachment | Photo metadata | Id, RequestId, RequestUpdateId, StorageKey, FileName, ContentType, SizeBytes, UploadedByUserId, CreatedAt|
+| RequestAttachment | Photo metadata | Id, RequestId, RequestUpdateId, StorageKey, FileName, ContentType, SizeBytes, UploadedByUserId, CreatedAt |
 Every attachment must belong to exactly one owning submission context:
 either the original MaintenanceRequest or one RequestUpdate.
 
@@ -179,7 +180,7 @@ WHERE status = 'Active';
 
 This example assumes the final schema uses a status column with the value `Active`. The migration must match the implemented status model and have an integration test.
 
-### Building Administrator
+### Building Administrator assignment
 
 - Each provisioned building must have exactly one active Building Administrator.
 - Administrator assignment history must be preserved.
@@ -190,9 +191,12 @@ This example assumes the final schema uses a status column with the value `Activ
   the new assignment in one database transaction.
 - MVP1 does not support multiple active administrators, delegation,
   or temporary overlapping assignments.
-- Exactly one active Building Administrator assignment per building.
-- Platform Administrator creates the building and assigns its administrator.
-- No multiple administrators or delegation in MVP1.
+
+The ERD relationship represents assignment history. The database must
+enforce exactly one active assignment per provisioned building and
+prevent overlapping effective periods. These are separate constraints;
+the one-to-many history relationship does not permit multiple active
+assignments.
 
 ### Membership
 
@@ -216,6 +220,9 @@ This example assumes the final schema uses a status column with the value `Activ
 ### Maintenance privacy
 
 - Every maintenance request belongs to one Building.
+- Every maintenance request has exactly one RequestLocation record.
+- RequestLocation must reference exactly one request; RequestId must be unique.
+- Request creation and RequestLocation creation must commit atomically.
 - Residents can access their own private requests.
 - InternalNote must never appear in resident-facing API projections.
 - Every attachment retrieval must perform authorization checks.
