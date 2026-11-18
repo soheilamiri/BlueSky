@@ -36,7 +36,8 @@
 | F-018 | Default categories | Provide initial maintenance categories | Must | System |
 | F-019 | Category management | Create, edit, enable, disable, reorder | Must | Building Admin |
 | F-020 | Request submission | Submit description, category, exactly one location, and optional photos | Must | Resident |
-| F-021 | Request location | Require exactly one private-area or common-area problem location per request | Must | Resident || F-022 | Photo upload | Optionally upload multiple photos to a request | Must | Resident |
+| F-021 | Request location | Require exactly one private-area or common-area problem location per request | Must | Resident |
+| F-022 | Photo upload | Optionally upload multiple photos to a request | Must | Resident |
 | F-023 | Request review | Review submitted requests | Must | Building Admin |
 | F-024 | Request approval/rejection | Approve or reject with reason | Must | Building Admin |
 | F-025 | Priority management | Assign and change priority | Must | Building Admin |
@@ -70,14 +71,25 @@
 | X-009 | Household accounts | One contract holder per contract |
 
 ## 4. Critical acceptance criteria
-- Every resident linked to a merged request can access all resident-visible
-  details of the master request.
-- The master request's original description and photos are visible to
-  linked residents.
+- Every resident linked to a master request through duplicate merging
+  can access all resident-visible details of that master request.
+- The master request's original description and photos are visible
+  to linked residents.
+- Linked residents can view the master's status, priority, resident-visible
+  updates, and resolution details.
 - The identities and contact information of other residents remain private.
-- Original descriptions, photos, and updates from duplicate requests remain
-  private to their respective submitters and authorized administrators.
-- Internal notes and audit records are never exposed through shared access.
+- Original descriptions, photos, and updates belonging to duplicate
+  requests remain private to their respective submitters and authorized
+  administrators.
+- Internal notes, audit records, and security metadata are never exposed
+  through shared access.
+- Linked residents can access master-request attachments only after
+  backend authorization.
+- Linked residents cannot access duplicate-request attachments belonging
+  to other residents.
+- A maintenance request cannot be created without exactly one problem location.
+- A maintenance request cannot be associated with multiple problem locations.
+- A common-area location does not require an apartment reference.
 
 ### Identity and membership
 - An unverified email cannot complete membership activation.
@@ -101,6 +113,9 @@
 - Merging preserves original request IDs, histories, and attachments.
 - Shared progress must not expose other residents' private information.
 - A Contract ID cannot have more than one Approved membership at a time.
+- Concurrent approval attempts for different membership requests
+  referencing the same Contract ID must never result in more than
+  one Approved membership.
 - Rejected and revoked membership attempts remain available for authorized
   administrative review.
 - A historical rejected or revoked membership does not, by itself, prevent

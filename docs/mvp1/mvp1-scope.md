@@ -46,7 +46,8 @@ MVP1 supports exactly one Building Administrator per building.
 - Verifies their email address.
 - Requests membership using building and Contract ID information.
 - Submits maintenance requests.
-- Tracks their own requests.
+- Tracks their own maintenance requests.
+- Accesses resident-visible details of master requests to which they become linked through uplicate merging.
 - Adds supplementary information to requests.
 
 One contract holder is supported per contract.
@@ -87,6 +88,10 @@ Each contract:
 An apartment can have only one active contract at a time.
 
 ### 4.3 Maintenance management
+Every maintenance request must have exactly one reported problem location.
+The location must represent either a private area or a common area.
+A common-area request does not require an apartment reference.
+
 Residents can submit requests containing:
 - Description
 - Category
@@ -161,11 +166,14 @@ MVP1 is functionally ready when:
 8. Residents can request membership using a Contract ID.
 9. Building Administrator can approve or reject membership.
 10. Approved residents can submit maintenance requests.
-11. 11. Residents can submit maintenance requests without photos and may attach one or more photos when available.
+11. Residents can submit maintenance requests without photos and may attach one or more photos when available.
 12. Building Administrator can manage request status and priority.
 13. Rejected requests require a reason.
 14. Duplicate requests can be merged without losing history.
-15. Residents cannot access another resident's private information.
+15. Residents cannot access other residents' identities, contact information,
+or private duplicate-request submissions. They can access the
+resident-visible details of master requests to which they are linked
+through duplicate merging.
 16. Internal notes remain administrator-only.
 17. Relevant notifications and audit records are generated.
 18. Critical business rules and authorization boundaries have automated tests.

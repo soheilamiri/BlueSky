@@ -54,13 +54,17 @@
 | BR-028 | Contract ID must be verified against management records. | Confirmed |
 | BR-029 | Contract ID alone does not grant building access. | Confirmed |
 | BR-030 | Membership statuses are Pending, Approved, Rejected, and Revoked. | Confirmed |
-| BR-031 | Contract expiry or revocation removes associated building access. | Confirmed |
+BR-031 | Building access requires both an Approved membership and an eligible contract. Contract expiry or revocation removes building access. | Confirmed |
 | BR-032 | The user account may remain active after membership revocation. | Confirmed |
 | BR-033 | National ID collection is not a default MVP1 requirement. | Confirmed |
 | BR-034 | A Contract ID may have at most one Approved membership at a time. | Confirmed |
 | BR-035 | Rejected and revoked membership attempts must be retained as historical records. | Confirmed |
 | BR-036 | Multiple historical membership attempts may reference the same Contract ID. | Confirmed |
-| BR-037 | An existing Approved membership prevents another membership for the same Contract ID from being approved. | Confirmed |
+BR-037 | The system must enforce at most one Approved membership per Contract ID, including during concurrent approval attempts. | Confirmed |
+
+- Does contract expiry automatically change an Approved membership
+  to Revoked, or does the membership remain Approved while access
+  is denied based on contract eligibility?
 ## 5. Maintenance requests
 
 | ID | Business rule | Status |
@@ -82,6 +86,10 @@
 | BR-054 | Building Administrator can add internal notes. | Confirmed |
 | BR-055 | Internal notes are never visible to residents. | Confirmed |
 | BR-056 | Every maintenance request must have exactly one reported problem location. | Confirmed |
+| BR-057 | A private-area location must reference the relevant apartment. | Confirmed |
+| BR-058 | A common-area location must identify a valid common-area type. | Confirmed |
+| BR-059 | A common-area location must not require an apartment reference. | Confirmed |
+
 ## 6. Request status and merging
 
 Current status vocabulary:
@@ -103,11 +111,35 @@ Current status vocabulary:
 | BR-064 | Original attachments remain associated with their submissions. | Confirmed |
 | BR-065 | Merged is a terminal state for a duplicate request. | Confirmed |
 | BR-066 | All resident-visible details of a master request are shared with every resident linked to that master through a duplicate merge. | Confirmed |
-| BR-067 | Shared master-request details include its original description, photos, status, priority, shared updates, and resolution details. | Confirmed |
+BR-067 | Shared master-request details include its original description, original photos, status, priority, resident-visible master updates, and resolution details. | Confirmed |
+| BR-068 | Only resident-visible updates belonging to the master request are shared with linked residents. | Confirmed |
+| BR-069 | Updates belonging to duplicate requests remain private to their respective submitters and authorized administrators. | Confirmed |
+| BR-070 | Internal notes are never shared with residents, including residents linked through duplicate merging. | Confirmed |
 | BR-071 | Master-request submitter identity and contact information remain private to other residents. | Confirmed |
 | BR-072 | Original descriptions, photos, and updates belonging to duplicate requests remain private to their respective submitters and authorized administrators. | Confirmed |
 | BR-073 | Internal notes, audit records, and security metadata are never visible to residents through shared request access. | Confirmed |
 
+### Status transition rules
+
+The following status transitions must be explicitly defined and
+validated by the backend.
+
+| Current status | Possible next status | Decision |
+|---|---|---|
+| Submitted | Under Review | Confirmed |
+| Under Review | Approved | Confirmed |
+| Under Review | Rejected | Confirmed |
+| Approved | In Progress | Confirmed |
+| In Progress | Resolved | Confirmed |
+| Submitted | Merged | Requires decision |
+| Under Review | Merged | Requires decision |
+| Approved | Merged | Requires decision |
+| In Progress | Merged | Requires decision |
+| Resolved | In Progress | Open |
+| Rejected | Approved | Open |
+
+A Merged request is terminal and cannot be independently reopened
+or processed as a normal maintenance request.
 ## 7. Maintenance categories
 
 | ID | Business rule | Status |
@@ -140,6 +172,9 @@ Initial categories:
 | BR-094 | Notifications are limited to maintenance-related events. | Confirmed |
 | BR-095 | General messaging and announcements are excluded. | Confirmed |
 | BR-096 | Notifications must not expose internal notes or other residents' private data. | Confirmed |
+| BR-097 | Uploaded files must be validated using file content, not only filename or declared MIME type. | Confirmed |
+| BR-098 | Attachments must not be publicly accessible by default. | Confirmed |
+| BR-099 | Every attachment retrieval must perform backend authorization. | Confirmed |
 
 ## 9. Security and audit
 

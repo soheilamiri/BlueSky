@@ -190,13 +190,22 @@ Can perform platform-level building provisioning and administrator assignment.
 Can manage only the assigned building.
 
 ### Resident
-### Resident
-Can access approved building functionality, their own private request data,
-and all resident-visible details of master requests to which they are linked
-through duplicate merging.
+Residents can:
 
-Residents must not access other residents' identities, contact information,
-duplicate request submissions, internal notes, or audit records.
+- Access their own private maintenance requests.
+- Access resident-visible details of master requests to which
+  they are linked through duplicate merging.
+- Access master-request attachments when authorized.
+
+Residents must not:
+
+- Access other residents' identities or contact information.
+- Access duplicate-request submissions belonging to other residents.
+- Access internal notes.
+- Access audit records or security metadata.
+
+Backend authorization must enforce these restrictions for both
+API responses and attachment downloads.
 
 ## 9. API design
 
@@ -245,6 +254,13 @@ The notification provider and reliable delivery mechanism remain open.
 
 Notification failure should not silently undo a successfully committed maintenance request.
 
+- Notification delivery must track its delivery status.
+- Failed notification delivery should support retry handling.
+- External email delivery must not be part of the transaction that
+  commits a maintenance request or workflow change.
+- Notification payloads must not expose internal notes or private
+  information belonging to other residents.
+
 ## 12. Local development
 
 Docker Compose is approved for local development.
@@ -264,6 +280,15 @@ Production secrets must never be committed to Git.
 - Request status transitions.
 - Contract rules.
 - Membership rules.
+
+- A linked resident can access master-request details.
+- An unlinked resident cannot access master-request details.
+- A linked resident cannot access another resident's duplicate submission.
+- Master attachment access is independently authorized.
+- Duplicate-request attachment access is independently restricted.
+- Internal notes cannot be retrieved through shared request access.
+- Concurrent membership approval cannot create multiple Approved
+  memberships for the same Contract ID.
 
 ### Integration tests
 - PostgreSQL constraints.

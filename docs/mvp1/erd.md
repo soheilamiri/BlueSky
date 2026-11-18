@@ -35,6 +35,9 @@ erDiagram
 
     APARTMENT ||--o{ CONTRACT : contract_history
     USER ||--o{ CONTRACT : holds
+The User-to-Contract cardinality remains provisional because the
+business decision on whether one user may hold multiple contracts
+has not yet been finalized.
 
     CONTRACT ||--o{ CONTRACT_PARKING_ASSIGNMENT : includes
     PARKING_SPACE ||--o{ CONTRACT_PARKING_ASSIGNMENT : assigned_through
@@ -87,7 +90,14 @@ Platform Administrator can be implemented as a platform-level role rather than a
 | ContractParkingAssignment | Contract-to-parking relationship | Id, ContractId, ParkingSpaceId, ValidFrom, ValidTo |
 | ContractStorageAssignment | Contract-to-storage relationship | Id, ContractId, StorageUnitId, ValidFrom, ValidTo |
 
-The Contract ID must be unique within the appropriate issuer scope and must never be reused.
+The Contract ID must be unique within its issuing management
+company's scope and must never be reused.
+
+The issuing management company must be represented in the data model
+if multiple issuers can use overlapping Contract IDs.
+
+The uniqueness constraint must cover the combination of issuer
+and Contract ID, unless global uniqueness is explicitly adopted.
 
 **Open:** Whether a User may hold multiple contracts.
 
@@ -114,7 +124,19 @@ A membership must reference a contract associated with an apartment in the selec
 | MaintenanceCategory | Building-specific category | Id, BuildingId, Name, Description, IsEnabled, SortOrder |
 | MaintenanceRequest | Resident's maintenance report | Id, BuildingId, SubmittedByUserId, CategoryId, Status, Priority, Description, SubmittedAt |
 | RequestLocation | Problem location | Id, RequestId, LocationType, FloorId, ApartmentId, Details |
-| RequestAttachment | Photo metadata | Id, RequestId, RequestUpdateId, StorageKey, FileName, ContentType, SizeBytes, UploadedByUserId |
+|RequestAttachment | Photo metadata | Id, RequestId, RequestUpdateId, StorageKey, FileName, ContentType, SizeBytes, UploadedByUserId, CreatedAt|
+Every attachment must belong to exactly one owning submission context:
+either the original MaintenanceRequest or one RequestUpdate.
+
+The data model must prevent an attachment from belonging to both
+contexts or neither context.
+
+The original ownership relationship must be preserved after request
+merging.
+
+Attachment authorization must use the original ownership context
+and the applicable master-request sharing rules.
+
 | RequestUpdate | Supplementary request update | Id, RequestId, AuthorUserId, Body, CreatedAt |
 | InternalNote | Administrator-only note | Id, RequestId, AuthorUserId, Body, CreatedAt |
 | RequestMergeLink | Duplicate-to-master relationship | Id, MasterRequestId, DuplicateRequestId, MergedByUserId, MergedAt |
@@ -157,7 +179,7 @@ WHERE status = 'Active';
 
 This example assumes the final schema uses a status column with the value `Active`. The migration must match the implemented status model and have an integration test.
 
-### Building Administrator assignment
+### Building Administrator
 
 - Each provisioned building must have exactly one active Building Administrator.
 - Administrator assignment history must be preserved.
@@ -168,9 +190,6 @@ This example assumes the final schema uses a status column with the value `Activ
   the new assignment in one database transaction.
 - MVP1 does not support multiple active administrators, delegation,
   or temporary overlapping assignments.
-
-### Building Administrator
-
 - Exactly one active Building Administrator assignment per building.
 - Platform Administrator creates the building and assigns its administrator.
 - No multiple administrators or delegation in MVP1.
@@ -190,6 +209,9 @@ This example assumes the final schema uses a status column with the value `Activ
   has been revoked, provided the Contract remains eligible.
 - The system must prevent concurrent approval of multiple memberships
   for the same Contract.
+- The database must enforce the one-Approved-membership-per-Contract
+  invariant using an appropriate unique constraint or partial unique index.
+
 
 ### Maintenance privacy
 
