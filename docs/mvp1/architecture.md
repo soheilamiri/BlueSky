@@ -236,13 +236,13 @@ Security requirements:
 - Avoid exposing storage keys.
 - Preserve original attachment associations when requests are merged.
 
-Production storage provider and file limits remain open.
+Production storage provider remains open. MVP1 photo policy: JPEG, PNG, and WebP; maximum five photos per submission; maximum 10 MB per photo. Validate file content, not only extension or declared MIME type.
 
 ## 11. Notifications
 
 MVP1 requires maintenance-related notifications.
 
-Suggested events:
+Approved events:
 - Request submitted.
 - Request approved or rejected.
 - Priority changed.
@@ -250,7 +250,7 @@ Suggested events:
 - Request merged.
 - Request resolved.
 
-The notification provider and reliable delivery mechanism remain open.
+Email is the approved MVP1 notification channel. The specific provider and reliable delivery mechanism remain open.
 
 Notification failure should not silently undo a successfully committed maintenance request.
 
@@ -279,7 +279,7 @@ Production secrets must never be committed to Git.
 - Business rules.
 - Contract rules.
 - Membership rules.
-- Request status transitions once the transition matrix is approved.
+- Request status transitions according to the approved MVP1 rules: duplicate merging is permitted only before the duplicate is Resolved or Rejected; Resolved and Rejected are terminal; resident cancellation and reopening are not supported.
 
 ### Integration tests
 - PostgreSQL constraints.
@@ -310,6 +310,8 @@ Production secrets must never be committed to Git.
 - Request submission.
 - Administrator request processing.
 - Duplicate merging.
+- Resident cannot cancel; resolved requests cannot be reopened.
+- Duplicate merge eligibility is enforced for Submitted, Under Review, Approved, and In Progress duplicate requests.
 
 ## 14. Observability and operations
 
