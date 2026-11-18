@@ -98,6 +98,10 @@
 - Expired or revoked contracts cannot authorize new membership.
 - Concurrent approval attempts for different membership requests referencing
   the same Contract ID cannot create more than one Approved membership.
+- Rejected and revoked membership attempts remain available for authorized
+  administrative review.
+- A historical rejected or revoked membership does not, by itself, prevent
+  a later eligible membership from being approved.
 
 ### Building and contracts
 - A contract must reference exactly one apartment.
@@ -114,10 +118,6 @@
 - Internal notes are never exposed through resident APIs or notifications.
 - Merging preserves original request IDs, histories, and attachments.
 - Shared progress must not expose other residents' private information.
-- Rejected and revoked membership attempts remain available for authorized
-  administrative review.
-- A historical rejected or revoked membership does not, by itself, prevent
-  a later eligible membership from being approved.
 
 ## 5. Open feature details
 
