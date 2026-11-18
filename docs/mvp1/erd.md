@@ -33,7 +33,7 @@ contracts has not yet been finalized.
 ```mermaid
 erDiagram
     USER ||--o{ BUILDING_ADMIN_ASSIGNMENT : assigned_as
-    BUILDING ||--o{ BUILDING_ADMIN_ASSIGNMENT : has_history
+    BUILDING ||--|{ BUILDING_ADMIN_ASSIGNMENT : has_history
     BUILDING ||--o{ FLOOR : contains
     FLOOR ||--o{ APARTMENT : contains
 
@@ -56,10 +56,12 @@ erDiagram
     MAINTENANCE_CATEGORY ||--o{ MAINTENANCE_REQUEST : classifies
 
     MAINTENANCE_REQUEST ||--|| REQUEST_LOCATION : has_exactly_one
-    MAINTENANCE_REQUEST ||--o{ REQUEST_ATTACHMENT : has
     MAINTENANCE_REQUEST ||--o{ REQUEST_UPDATE : has
+    REQUEST_UPDATE ||--o{ REQUEST_ATTACHMENT : attaches
+    MAINTENANCE_REQUEST ||--o{ REQUEST_ATTACHMENT : attaches_original_photos
     MAINTENANCE_REQUEST ||--o{ INTERNAL_NOTE : has
-    MAINTENANCE_REQUEST ||--o{ REQUEST_MERGE_LINK : participates
+    MAINTENANCE_REQUEST ||--o{ REQUEST_MERGE_LINK : is_master
+    MAINTENANCE_REQUEST ||--o| REQUEST_MERGE_LINK : is_duplicate
 
     USER ||--o{ NOTIFICATION : receives
     USER ||--o{ AUDIT_EVENT : performs
@@ -125,26 +127,21 @@ A membership must reference a contract associated with an apartment in the selec
 | MaintenanceCategory | Building-specific category | Id, BuildingId, Name, Description, IsEnabled, SortOrder |
 | MaintenanceRequest | Resident's maintenance report | Id, BuildingId, SubmittedByUserId, CategoryId, Status, Priority, Description, SubmittedAt |
 | RequestLocation | Problem location | Id, RequestId, LocationType, FloorId, ApartmentId, Details |
-| RequestAttachment | Photo metadata | Id, RequestId, RequestUpdateId, StorageKey, FileName, ContentType, SizeBytes, UploadedByUserId, CreatedAt |
-Every attachment must belong to exactly one owning submission context:
-either the original MaintenanceRequest or one RequestUpdate.
-
-The data model must prevent an attachment from belonging to both
-contexts or neither context.
-
-The original ownership relationship must be preserved after request
-merging.
-
-Attachment authorization must use the original ownership context
-and the applicable master-request sharing rules.
-
 | RequestUpdate | Supplementary request update | Id, RequestId, AuthorUserId, Body, CreatedAt |
+| RequestAttachment | Photo metadata | Id, RequestId (nullable), RequestUpdateId (nullable), StorageKey, FileName, ContentType, SizeBytes, UploadedByUserId, CreatedAt |
 | InternalNote | Administrator-only note | Id, RequestId, AuthorUserId, Body, CreatedAt |
 | RequestMergeLink | Duplicate-to-master relationship | Id, MasterRequestId, DuplicateRequestId, MergedByUserId, MergedAt |
 | Notification | Notification record | Id, RecipientUserId, RequestId, Type, CreatedAt, ReadAt, DeliveryStatus |
 | AuditEvent | Business action history | Id, ActorUserId, BuildingId, EntityType, EntityId, Action, OccurredAt, Data |
 
-The attachment model must preserve the original report association after a merge.
+Each attachment must belong to exactly one owning submission context:
+either the original MaintenanceRequest or one RequestUpdate. The schema
+must prevent both foreign keys from being populated or both from being
+empty. Preserve the original ownership relationship after request
+merging.
+
+Attachment authorization must use the original ownership context and
+the applicable master-request sharing rules.
 
 ### Shared master-request access
 
