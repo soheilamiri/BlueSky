@@ -49,6 +49,7 @@
 | BR-023 | Expired or revoked contracts cannot authorize new membership. | Confirmed |
 | BR-024 | Historical contract records must be preserved. | Confirmed |
 | BR-025 | Exactly one contract holder is supported per contract. | Confirmed |
+| BR-038 | One resident account may hold multiple contracts. | Confirmed |
 | BR-026 | Spouse and household accounts are excluded from MVP1. | Confirmed |
 | BR-027 | Registration and building membership are separate processes. | Confirmed |
 | BR-028 | Contract ID must be verified against management records. | Confirmed |
@@ -62,9 +63,7 @@
 | BR-036 | Multiple historical membership attempts may reference the same Contract ID. | Confirmed |
 | BR-037 | The system must enforce at most one Approved membership per Contract ID, including during concurrent approval attempts. | Confirmed |
 
-**Open decision:** Does contract expiry automatically change an Approved membership
-  to Revoked, or does the membership remain Approved while access
-  is denied based on contract eligibility?
+**Confirmed:** Contract expiry or revocation removes building access immediately. The membership record remains Approved as historical status; every access decision must also verify that the contract is eligible and active.
 ## 5. Maintenance requests
 
 | ID | Business rule | Status |
@@ -89,6 +88,11 @@
 | BR-057 | A private-area location must reference the relevant apartment. | Confirmed |
 | BR-058 | A common-area location must identify a valid common-area type. | Confirmed |
 | BR-059 | A common-area location must not require an apartment reference. | Confirmed |
+| BR-074 | Residents may report private-area problems only in their own contracted apartment or common-area problems. | Confirmed |
+| BR-075 | Residents cannot report problems inside another resident's private apartment. | Confirmed |
+| BR-076 | Residents cannot cancel maintenance requests in MVP1. | Confirmed |
+| BR-077 | Resolved requests cannot be reopened in MVP1; recurring problems require a new request. | Confirmed |
+| BR-078 | Duplicate requests may be merged only while the duplicate is not Resolved or Rejected. | Confirmed |
 
 ## 6. Request status and merging
 
@@ -124,12 +128,14 @@ Current status vocabulary:
 The status vocabulary is confirmed, but the allowed transition matrix is
 not yet approved. Do not infer transition permissions from the status list.
 
-**Open:** Define allowed transitions for Submitted, Under Review, Approved,
-In Progress, Resolved, Rejected, and Merged, including cancellation,
-reopening, and the states from which a request may be merged.
+**Confirmed MVP1 transition constraints:**
+- Duplicate requests may be merged only from Submitted, Under Review, Approved, or In Progress.
+- Resolved, Rejected, and Merged are terminal states.
+- Residents cannot cancel requests.
+- Resolved requests cannot be reopened; a recurring problem is submitted as a new request.
+- The master request retains its current status when a duplicate is merged.
 
-A Merged request is terminal for the duplicate record; the exact merge
-eligibility rules for source statuses remain open.
+A Merged request is terminal for the duplicate record. A duplicate may be merged only from Submitted, Under Review, Approved, or In Progress. Resolved and Rejected requests cannot be merged. The master request retains its own status and history.
 
 ## 7. Maintenance categories
 
@@ -159,13 +165,17 @@ Initial categories:
 | BR-090 | Multiple photos are supported. | Confirmed |
 | BR-091 | Video uploads are excluded. | Confirmed |
 | BR-092 | JPEG, PNG, and WebP are proposed image formats. | Proposed |
-| BR-093 | Maximum file size and photo count are not decided. | Open |
-| BR-094 | Notifications are limited to maintenance-related events. | Confirmed |
-| BR-095 | General messaging and announcements are excluded. | Confirmed |
-| BR-096 | Notifications must not expose internal notes or other residents' private data. | Confirmed |
-| BR-097 | Uploaded files must be validated using file content, not only filename or declared MIME type. | Confirmed |
-| BR-098 | Attachments must not be publicly accessible by default. | Confirmed |
-| BR-099 | Every attachment retrieval must perform backend authorization. | Confirmed |
+| BR-093 | Each submission may contain at most five photos, with a maximum size of 10 MB per photo. | Confirmed |
+| BR-094 | Accepted photo formats are JPEG, PNG, and WebP. | Confirmed |
+| BR-095 | Notifications are limited to maintenance-related events. | Confirmed |
+| BR-096 | General messaging and announcements are excluded. | Confirmed |
+| BR-097 | Notifications must not expose internal notes or other residents' private data. | Confirmed |
+| BR-098 | Uploaded files must be validated using file content, not only filename or declared MIME type. | Confirmed |
+| BR-099 | Attachments must not be publicly accessible by default. | Confirmed |
+| BR-110 | Every attachment retrieval must perform backend authorization. | Confirmed |
+| BR-111 | MVP1 maintenance notifications are delivered by email. | Confirmed |
+| BR-112 | Email notifications are generated for submission, approval/rejection, priority changes, work starting, merging, and resolution. | Confirmed |
+| BR-113 | Resolution photos are optional. | Confirmed |
 
 ## 9. Security and audit
 
@@ -180,20 +190,14 @@ Initial categories:
 | BR-106 | Important administrative and maintenance actions are audited. | Confirmed |
 | BR-107 | Exact audit and data retention periods are not decided. | Open |
 
-## 10. Open questions
+## 10. Deferred decisions
 
-Do not silently convert these into confirmed rules:
+1. Can one parking space be assigned to multiple active contracts?
+2. Can one storage unit be assigned to multiple active contracts?
+3. What are the exact data and audit retention periods?
+4. Which email delivery provider will be used?
 
-1. Can one user hold multiple contracts?
-2. Can one parking space be assigned to multiple active contracts?
-3. Can one storage unit be assigned to multiple active contracts?
-4. Can a resident report a problem inside another resident's private apartment?
-5. Can a resident cancel a submitted request?
-6. Can an administrator reopen a resolved request?
-7. Are resolution photos required?
-8. What are the maximum photo count and file size?
-9. What notification provider and channels will be used?
-10. What are the data and audit retention periods?
+These decisions do not block the MVP1 maintenance workflow baseline. Do not silently expand scope to resolve them.
 
 ## 11. Implementation requirements
 
