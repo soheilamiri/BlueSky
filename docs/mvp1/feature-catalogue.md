@@ -96,6 +96,8 @@
 - Contract ID submission creates pending membership, not automatic access.
 - Only the authorized Building Administrator can approve or reject membership.
 - Expired or revoked contracts cannot authorize new membership.
+- Concurrent approval attempts for different membership requests referencing
+  the same Contract ID cannot create more than one Approved membership.
 
 ### Building and contracts
 - A contract must reference exactly one apartment.
@@ -112,10 +114,6 @@
 - Internal notes are never exposed through resident APIs or notifications.
 - Merging preserves original request IDs, histories, and attachments.
 - Shared progress must not expose other residents' private information.
-- A Contract ID cannot have more than one Approved membership at a time.
-- Concurrent approval attempts for different membership requests
-  referencing the same Contract ID must never result in more than
-  one Approved membership.
 - Rejected and revoked membership attempts remain available for authorized
   administrative review.
 - A historical rejected or revoked membership does not, by itself, prevent
