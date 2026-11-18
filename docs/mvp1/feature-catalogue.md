@@ -32,12 +32,12 @@
 | F-014 | Membership request | Resident submits building and Contract ID | Must | Resident |
 | F-015 | Contract verification | Verify contract against management records | Must | Building Admin |
 | F-016 | Membership approval | Approve or reject membership | Must | Building Admin |
-| F-017 | Membership revocation | Remove access after contract expiry/revocation | Must | System/Admin |
+| F-017 | Membership access eligibility | Remove building access when contract expires or is revoked while preserving the historical Approved membership status | Must | System/Admin |
 | F-018 | Default categories | Provide initial maintenance categories | Must | System |
 | F-019 | Category management | Create, edit, enable, disable, reorder | Must | Building Admin |
 | F-020 | Request submission | Submit description, category, exactly one location, and optional photos | Must | Resident |
 | F-021 | Request location | Require exactly one private-area or common-area problem location per request | Must | Resident |
-| F-022 | Photo upload | Optionally upload multiple photos to a request | Must | Resident |
+| F-022 | Photo upload | Optionally upload up to five JPEG, PNG, or WebP photos, maximum 10 MB each | Must | Resident |
 | F-023 | Request review | Review submitted requests | Must | Building Admin |
 | F-024 | Request approval/rejection | Approve or reject with reason | Must | Building Admin |
 | F-025 | Priority management | Assign and change priority | Must | Building Admin |
@@ -89,6 +89,9 @@
   to other residents.
 - A maintenance request cannot be created without exactly one problem location.
 - A maintenance request cannot be associated with multiple problem locations.
+- Each resident account may hold multiple contracts, but each contract has exactly one holder.
+- Each photo must be JPEG, PNG, or WebP, no larger than 10 MB, with at most five photos per submission.
+- Maintenance notifications use email for submission, approval/rejection, priority changes, work start, merge, and resolution.
 - A common-area location does not require an apartment reference.
 
 ### Identity and membership
@@ -110,6 +113,12 @@
 - A contract may have multiple parking and storage assignments.
 
 ### Maintenance
+- A resident can report a private-area problem only in their own contracted apartment.
+- Residents cannot report problems inside another resident's private apartment.
+- Residents cannot cancel maintenance requests.
+- Resolved requests cannot be reopened; a recurring issue requires a new request.
+- Duplicate requests may be merged only while the duplicate is not Resolved or Rejected.
+- Resolution photos are optional.
 - Common-area requests do not require an apartment number.
 - Residents cannot assign or change priority.
 - Rejection requires an explanation.
@@ -119,18 +128,13 @@
 - Merging preserves original request IDs, histories, and attachments.
 - Shared progress must not expose other residents' private information.
 
-## 5. Open feature details
+## 5. Deferred decisions
 
-The following are not yet finalized:
+The following are outside the remaining MVP1 product decisions and must not expand MVP1 implementation:
 
-1. Whether resolved requests can be reopened.
-2. Whether residents can cancel submitted requests.
-3. Whether residents may report problems inside another resident's private apartment.
-4. Whether resolution photos are required.
-5. Maximum photo count.
-6. Maximum photo file size.
-7. Notification provider and delivery channels.
-8. Audit and data retention periods.
+1. Exact audit and data retention periods.
+2. Notification delivery provider implementation details beyond email as the MVP1 channel.
+3. Whether parking or storage assets may have overlapping active assignments.
 
 ## 6. Traceability
 
