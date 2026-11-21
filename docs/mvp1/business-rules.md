@@ -1,9 +1,9 @@
 
 # BlueSky — MVP1 Business Rules
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Status:** Confirmed decisions and open questions  
-**Date:** 2026-11-18
+**Date:** 2026-11-21
 
 ## 1. Status definitions
 
@@ -76,14 +76,14 @@
 | BR-045 | Building Administrator manages the maintenance lifecycle. | Confirmed |
 | BR-046 | Rejection requires a reason. | Confirmed |
 | BR-047 | Only Building Administrator assigns or changes priority. | Confirmed |
-| BR-048 | Priority levels are High, Medium, and Low. | Confirmed |
+| BR-048 | Priority levels are Low, Normal, High, and Urgent; Urgent is reserved exclusively for immediate safety risk. | Confirmed |
 | BR-049 | Residents can view the priority of their own requests. | Confirmed |
-| BR-050 | Residents may edit the original request before review begins. | Confirmed |
-| BR-051 | After review begins, original submission becomes immutable to the resident. | Confirmed |
-| BR-052 | Residents can add supplementary descriptions and photos after review begins. | Confirmed |
-| BR-053 | Supplementary updates preserve author and timestamp. | Confirmed |
-| BR-054 | Building Administrator can add internal notes. | Confirmed |
-| BR-055 | Internal notes are never visible to residents. | Confirmed |
+| BR-050 | Original request submission content is immutable after submission. | Confirmed |
+| BR-051 | Residents cannot edit or delete the original submission. | Confirmed |
+| BR-052 | Residents can add append-only comments and photos to non-terminal requests. | Confirmed |
+| BR-053 | Every supplementary update preserves author and timestamp and is visible to authorized residents under merge-sharing rules. | Confirmed |
+| BR-054 | Building Administrators can add append-only comments and photos to non-terminal requests; no internal notes are supported. | Confirmed |
+| BR-055 | Administrative audit events are separate from resident-visible request history and are never exposed to residents. | Confirmed |
 | BR-056 | Every maintenance request must have exactly one reported problem location. | Confirmed |
 | BR-057 | A private-area location must reference the relevant apartment. | Confirmed |
 | BR-058 | A common-area location must identify a valid common-area type. | Confirmed |
@@ -163,8 +163,8 @@ Initial categories:
 |---|---|---|
 | BR-090 | Multiple photos are supported. | Confirmed |
 | BR-091 | Video uploads are excluded. | Confirmed |
-| BR-092 | JPEG, PNG, and WebP are proposed image formats. | Proposed |
-| BR-093 | Each submission may contain at most five photos, with a maximum size of 10 MB per photo. | Confirmed |
+| BR-092 | JPEG, PNG, and WebP are the accepted image formats. | Confirmed |
+| BR-093 | Original submission and each subsequent update may contain at most five photos, each no larger than 10 MB. | Confirmed |
 | BR-094 | Accepted photo formats are JPEG, PNG, and WebP. | Confirmed |
 | BR-095 | Notifications are limited to maintenance-related events. | Confirmed |
 | BR-096 | General messaging and announcements are excluded. | Confirmed |
@@ -173,7 +173,7 @@ Initial categories:
 | BR-099 | Attachments must not be publicly accessible by default. | Confirmed |
 | BR-110 | Every attachment retrieval must perform backend authorization. | Confirmed |
 | BR-111 | MVP1 maintenance notifications are delivered by email. | Confirmed |
-| BR-112 | Email notifications are generated for submission, approval/rejection, priority changes, work starting, merging, and resolution. | Confirmed |
+| BR-112 | Email notifications are generated for submission, approval/rejection, priority changes, work starting, merging, and resolution. | Confirmed |\n| BR-114 | A new Urgent request or a priority change to Urgent immediately emails the Building Administrator only. | Confirmed |\n| BR-115 | Residents cannot disable essential maintenance emails in MVP1. | Confirmed |\n| BR-116 | Maintenance email events are written to a PostgreSQL Outbox in the same transaction as the business change and sent asynchronously after commit. | Confirmed |\n| BR-117 | Outbox delivery uses five automatic attempts with delays of 1, 5, 15, and 60 minutes; Failed notifications may be manually retried by the Building Administrator for that building. | Confirmed |\n| BR-118 | Notification payloads contain minimal identifiers/metadata; the worker loads current recipient data at processing time. | Confirmed |\n| BR-119 | Ineligible recipients are marked Skipped with a reason and are not automatically retried. | Confirmed |\n| BR-120 | Each delivery attempt records the email address captured at attempt start; a later retry resolves the current address again. | Confirmed |\n| BR-121 | Notification monitoring and manual retry are restricted to the Building Administrator of the associated building. | Confirmed |
 | BR-113 | Resolution photos are optional. | Confirmed |
 
 ## 9. Security and audit
@@ -187,7 +187,7 @@ Initial categories:
 | BR-104 | Building-level data isolation is mandatory. | Confirmed |
 | BR-105 | Resident-level access restrictions are mandatory. | Confirmed |
 | BR-106 | Important administrative and maintenance actions are audited. | Confirmed |
-| BR-107 | Exact audit and data retention periods are not decided. | Open |
+| BR-107 | Exact audit-event retention period remains open; notification events and delivery attempts are retained for 24 months from original event creation. | Confirmed |
 
 ## 10. Deferred decisions
 
