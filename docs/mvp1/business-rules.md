@@ -118,10 +118,10 @@ Current status vocabulary:
 | BR-067 | Shared master-request details include its original description, original photos, status, priority, resident-visible master updates, and resolution details. | Confirmed |
 | BR-068 | Only resident-visible updates belonging to the master request are shared with linked residents. | Confirmed |
 | BR-069 | Updates belonging to duplicate requests remain private to their respective submitters and authorized administrators. | Confirmed |
-| BR-070 | Internal notes are never shared with residents, including residents linked through duplicate merging. | Confirmed |
+| BR-070 | Administrative audit events and security metadata are never shared with residents, including residents linked through duplicate merging. | Confirmed |
 | BR-071 | Master-request submitter identity and contact information remain private to other residents. | Confirmed |
 | BR-072 | Original descriptions, photos, and updates belonging to duplicate requests remain private to their respective submitters and authorized administrators. | Confirmed |
-| BR-073 | Internal notes, audit records, and security metadata are never visible to residents through shared request access. | Confirmed |
+| BR-073 | Administrative audit records and security metadata are never visible to residents through shared request access. | Confirmed |
 
 ### Status transition rules
 
@@ -168,12 +168,20 @@ Initial categories:
 | BR-094 | Accepted photo formats are JPEG, PNG, and WebP. | Confirmed |
 | BR-095 | Notifications are limited to maintenance-related events. | Confirmed |
 | BR-096 | General messaging and announcements are excluded. | Confirmed |
-| BR-097 | Notifications must not expose internal notes or other residents' private data. | Confirmed |
+| BR-097 | Notifications must not expose administrative audit data or other residents' private data. | Confirmed |
 | BR-098 | Uploaded files must be validated using file content, not only filename or declared MIME type. | Confirmed |
 | BR-099 | Attachments must not be publicly accessible by default. | Confirmed |
 | BR-110 | Every attachment retrieval must perform backend authorization. | Confirmed |
 | BR-111 | MVP1 maintenance notifications are delivered by email. | Confirmed |
-| BR-112 | Email notifications are generated for submission, approval/rejection, priority changes, work starting, merging, and resolution. | Confirmed |\n| BR-114 | A new Urgent request or a priority change to Urgent immediately emails the Building Administrator only. | Confirmed |\n| BR-115 | Residents cannot disable essential maintenance emails in MVP1. | Confirmed |\n| BR-116 | Maintenance email events are written to a PostgreSQL Outbox in the same transaction as the business change and sent asynchronously after commit. | Confirmed |\n| BR-117 | Outbox delivery uses five automatic attempts with delays of 1, 5, 15, and 60 minutes; Failed notifications may be manually retried by the Building Administrator for that building. | Confirmed |\n| BR-118 | Notification payloads contain minimal identifiers/metadata; the worker loads current recipient data at processing time. | Confirmed |\n| BR-119 | Ineligible recipients are marked Skipped with a reason and are not automatically retried. | Confirmed |\n| BR-120 | Each delivery attempt records the email address captured at attempt start; a later retry resolves the current address again. | Confirmed |\n| BR-121 | Notification monitoring and manual retry are restricted to the Building Administrator of the associated building. | Confirmed |
+| BR-112 | Email notifications are generated for submission, approval/rejection, priority changes, work starting, merging, and resolution. | Confirmed |
+| BR-114 | A new Urgent request or a priority change to Urgent immediately emails the Building Administrator only. | Confirmed |
+| BR-115 | Residents cannot disable essential maintenance emails in MVP1. | Confirmed |
+| BR-116 | Maintenance email events are written to a PostgreSQL Outbox in the same transaction as the business change and sent asynchronously after commit. | Confirmed |
+| BR-117 | Outbox delivery uses five automatic attempts with delays of 1, 5, 15, and 60 minutes; Failed notifications may be manually retried by the Building Administrator for that building. | Confirmed |
+| BR-118 | Notification payloads contain minimal identifiers/metadata; the worker loads current recipient data at processing time. | Confirmed |
+| BR-119 | Ineligible recipients are marked Skipped with a reason and are not automatically retried. | Confirmed |
+| BR-120 | Each delivery attempt records the email address captured at attempt start; a later retry resolves the current address again. | Confirmed |
+| BR-121 | Notification monitoring and manual retry are restricted to the Building Administrator of the associated building. | Confirmed |
 | BR-113 | Resolution photos are optional. | Confirmed |
 
 ## 9. Security and audit
