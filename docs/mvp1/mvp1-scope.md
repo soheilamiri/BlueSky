@@ -1,9 +1,9 @@
 
 # BlueSky — MVP1 Scope
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Status:** MVP1 baseline  
-**Date:** 2026-11-18
+**Date:** 2026-11-21
 
 ## 1. Purpose
 
@@ -113,7 +113,7 @@ Building Administrators can:
 - Provide a rejection reason.
 - Assign and change priority.
 - Update request status.
-- Add internal notes.
+- Add append-only comments and photo updates to non-terminal requests.
 - Record resolution details.
 - Merge duplicate requests.
 
@@ -132,11 +132,11 @@ Building Administrators can create, edit, enable, disable, and reorder categorie
 Historical requests retain their original category information.
 
 ### 4.5 Notifications and audit
-MVP1 sends maintenance-related email notifications for request submission, approval or rejection, priority changes, work starting, duplicate merging, and resolution. The in-app request history remains the authoritative record. Audit records are retained for important administrative and workflow actions.
+MVP1 sends the approved maintenance lifecycle emails, including an immediate urgent alert to the Building Administrator only. Delivery uses a PostgreSQL-backed Outbox and background worker with five-attempt retry, administrator-only monitoring/manual retry, and 24-month notification-event/attempt retention. The in-app request history remains authoritative. Residents cannot configure essential notification preferences in MVP1.
 
 Residents cannot cancel requests, and administrators cannot reopen resolved requests in MVP1. A recurring problem must be submitted as a new request.
 
-Internal notes must never be visible to residents.
+Administrative audit events and security metadata must never be visible to residents. There are no internal notes in MVP1; all ordinary request updates are visible to authorized residents under the approved duplicate-merge privacy rules.
 
 ## 5. Out of scope
 
@@ -180,7 +180,7 @@ MVP1 is functionally ready when:
 or private duplicate-request submissions. They can access the
 resident-visible details of master requests to which they are linked
 through duplicate merging.
-17. Internal notes remain administrator-only.
+17. Request history and supplementary updates are append-only; administrative audit events remain administrator-only.
 18. Relevant notifications and audit records are generated.
 19. Critical business rules and authorization boundaries have automated tests.
 20. A resident account can hold multiple contracts, but each contract has exactly one holder.
