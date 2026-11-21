@@ -1,0 +1,26 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# PostgreSQL local data and backups
+database/data/
+database/backups/
+
+# .NET build artifacts
+**/bin/
+**/obj/
+
+# Node.js dependencies and build artifacts
+**/node_modules/
+**/dist/
+
+# IDE files
+.vscode/
+.idea/
+*.user
+*.suo
+
+# OS files
+.DS_Store
+Thumbs.db
