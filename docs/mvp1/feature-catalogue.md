@@ -54,7 +54,10 @@
 | F-036 | Attachment authorization | Authorize attachment retrieval | Supporting | System |
 | F-037 | Historical preservation | Preserve contracts, assignments, and request history | Supporting | System |
 | F-038 | Automated testing | Test business rules and access controls | Supporting | Development |
-| F-039 | Observability | Structured logs and health checks | Supporting | Operations |\n| F-040 | Urgent notification | Immediately email the Building Administrator when a request becomes Urgent | Must | System |\n| F-041 | Notification Outbox | Persist event and business change atomically; deliver asynchronously with retry and idempotency controls | Supporting | System |\n| F-042 | Notification monitoring | Building Administrator views delivery state and manually retries Failed notifications for their building | Must | Building Admin |
+| F-039 | Observability | Structured logs and health checks | Supporting | Operations |
+| F-040 | Urgent notification | Immediately email the Building Administrator when a request becomes Urgent | Must | System |
+| F-041 | Notification Outbox | Persist event and business change atomically; deliver asynchronously with retry and idempotency controls | Supporting | System |
+| F-042 | Notification monitoring | Building Administrator views delivery state and manually retries Failed notifications for their building | Must | Building Admin |
 
 ## 3. Excluded features
 
@@ -81,7 +84,7 @@
 - Original descriptions, photos, and updates belonging to duplicate
   requests remain private to their respective submitters and authorized
   administrators.
-- Internal notes, audit records, and security metadata are never exposed
+- Administrative audit records and security metadata are never exposed
   through shared access.
 - Linked residents can access master-request attachments only after
   backend authorization.
