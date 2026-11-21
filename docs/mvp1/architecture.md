@@ -1,9 +1,9 @@
 
 # BlueSky — MVP1 Architecture
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Status:** Approved stack; proposed application structure  
-**Date:** 2026-11-18
+**Date:** 2026-11-21
 
 ## 1. Architecture goals
 
@@ -57,7 +57,9 @@ flowchart LR
     WEB --> API
     API --> DB
     API --> FILES
-    API --> EMAIL
+    API --> DB
+    WORKER[Notification Worker] --> DB
+    WORKER --> EMAIL
 ~~~
 
 ## 5. Logical backend modules
@@ -108,7 +110,9 @@ flowchart LR
 ### Notifications
 - Maintenance-related notifications.
 - Email verification notifications.
-- Notification delivery tracking.
+- PostgreSQL-backed Outbox events.
+- Background email delivery worker.
+- Delivery attempts, retries, manual retry, and monitoring.
 
 ### Audit
 - Administrative action history.
@@ -131,7 +135,7 @@ flowchart TB
         ASSET[Asset Management]
         MAINT[Maintenance]
         FILE[File Management]
-        NOTIFY[Notifications]
+        NOTIFY[Notifications + Outbox Worker]
         AUDIT[Audit]
         API --> ID
         API --> BUILD
@@ -153,6 +157,7 @@ flowchart TB
     MAINT --> DB
     AUDIT --> DB
     FILE --> STORE
+    NOTIFY --> DB
     NOTIFY --> EMAIL
 ~~~
 
@@ -201,7 +206,6 @@ Residents must not:
 
 - Access other residents' identities or contact information.
 - Access duplicate-request submissions belonging to other residents.
-- Access internal notes.
 - Access audit records or security metadata.
 
 Backend authorization must enforce these restrictions for both
@@ -218,7 +222,7 @@ API responses and attachment downloads.
 - Pagination for collection endpoints.
 - Explicit authorization policies.
 
-Internal notes must never be returned in resident-facing API responses.
+Resident-visible request history and updates are separate from administrative audit events. Audit events and security metadata must never be returned in resident-facing API responses.
 
 The final API contract will be created during implementation.
 
@@ -236,30 +240,38 @@ Security requirements:
 - Avoid exposing storage keys.
 - Preserve original attachment associations when requests are merged.
 
-Production storage provider remains open. MVP1 photo policy: JPEG, PNG, and WebP; maximum five photos per submission; maximum 10 MB per photo. Validate file content, not only extension or declared MIME type.
+Production storage provider remains open. MVP1 photo policy: JPEG, PNG, and WebP; maximum five photos on the original submission and on each subsequent update; maximum 10 MB per photo. Validate file content, not only extension or declared MIME type.
 
 ## 11. Notifications
 
-MVP1 requires maintenance-related notifications.
+MVP1 uses a PostgreSQL-backed Outbox pattern and a background worker for email delivery.
 
-Approved events:
-- Request submitted.
-- Request approved or rejected.
-- Priority changed.
-- Work started.
-- Request merged.
-- Request resolved.
+### Transaction and delivery flow
 
-Email is the approved MVP1 notification channel. The specific provider and reliable delivery mechanism remain open.
+1. The API performs the business operation.
+2. In the same PostgreSQL transaction, it persists the business change and a minimal Outbox event.
+3. After commit, a background worker claims pending events and loads current recipient/request data.
+4. The worker verifies account status and notification eligibility, captures the current email address for the attempt, and sends through the configured email provider.
+5. Every delivery attempt and outcome is persisted separately from the Outbox event.
 
-Notification failure should not silently undo a successfully committed maintenance request.
+Email delivery is asynchronous and must never be part of the transaction that commits a maintenance or contract operation. Provider failure must not roll back the business action.
 
-- Notification delivery must track its delivery status.
-- Failed notification delivery should support retry handling.
-- External email delivery must not be part of the transaction that
-  commits a maintenance request or workflow change.
-- Notification payloads must not expose internal notes or private
-  information belonging to other residents.
+### Approved behavior
+
+- Maintenance email events: request submitted, approved, rejected, priority changed, work started, merged, and resolved.
+- A new Urgent request or a change to Urgent triggers an immediate email to the Building Administrator only. Residents receive no additional urgent email.
+- Contract lifecycle emails: 60-day expiration reminder, expiration confirmation, early revocation, and successful renewal.
+- Resident notification preferences are not configurable in MVP1; essential maintenance emails cannot be disabled.
+- The Outbox payload contains only event metadata and identifiers, not rendered content or unnecessary personal data.
+- The worker loads current recipient data at processing time. The email address captured at the start of an attempt remains that attempt's recipient. A retry loads the latest address.
+- If a recipient is no longer eligible, mark the delivery Skipped with a reason; do not automatically retry it.
+- Automatic retry: five attempts total, with delays of 1, 5, 15, and 60 minutes after failures. After the fifth failed attempt, mark Failed.
+- A Building Administrator may manually retry Failed notifications for their own building. Preserve prior attempts; manual retry begins a new retry cycle and creates an audit event.
+- A simple administrator-only monitoring page shows notification ID, event type, related request, recipient email, status, attempt count, last attempt, and last error. It supports viewing details/attempts and retrying Failed notifications.
+- Outbox events and delivery attempts are retained for 24 months from original event creation. Manual retry does not reset retention.
+- The in-app maintenance request history remains the authoritative record. No general chat, messaging, or separate notification inbox is introduced.
+
+The email provider remains an implementation choice. Delivery attempts must be idempotent where supported and must not expose portal access codes, internal audit data, or another resident's private information.
 
 ## 12. Local development
 
@@ -300,7 +312,7 @@ Production secrets must never be committed to Git.
 - A linked resident cannot access another resident's duplicate submission.
 - Master attachment access is independently authorized.
 - Duplicate-request attachment access is independently restricted.
-- Internal notes cannot be retrieved through shared request access.
+- Administrative audit events and security metadata cannot be retrieved through shared request access.
 - Concurrent membership approval cannot create multiple Approved
   memberships for the same Contract ID.
 - Unauthorized attachment retrieval.
@@ -339,6 +351,7 @@ Specific SLOs, RPO/RTO, retention, and monitoring providers remain open.
 | ADR-008 | Authentication provider | Open |
 | ADR-009 | Production hosting and Azure services | Open |
 | ADR-010 | Notification provider | Open |
+| ADR-011 | PostgreSQL Outbox and background notification worker | Approved |
 
 ## 16. Related documentation
 
