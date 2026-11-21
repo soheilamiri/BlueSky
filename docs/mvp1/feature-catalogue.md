@@ -1,9 +1,9 @@
 
 # BlueSky — MVP1 Feature Catalogue
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Status:** MVP1 planning baseline  
-**Date:** 2026-11-18
+**Date:** 2026-11-21
 
 ## 1. Priority definitions
 
@@ -37,16 +37,16 @@
 | F-019 | Category management | Create, edit, enable, disable, reorder | Must | Building Admin |
 | F-020 | Request submission | Submit description, category, exactly one location, and optional photos | Must | Resident |
 | F-021 | Request location | Require exactly one private-area or common-area problem location per request | Must | Resident |
-| F-022 | Photo upload | Optionally upload up to five JPEG, PNG, or WebP photos, maximum 10 MB each | Must | Resident |
+| F-022 | Photo upload | Original submission supports up to five JPEG, PNG, or WebP photos, maximum 10 MB each | Must | Resident |
 | F-023 | Request review | Review submitted requests | Must | Building Admin |
 | F-024 | Request approval/rejection | Approve or reject with reason | Must | Building Admin |
 | F-025 | Priority management | Assign and change priority | Must | Building Admin |
 | F-026 | Status tracking | Track request lifecycle | Must | Resident/Admin |
-| F-027 | Supplementary updates | Add text and photos after submission | Must | Resident |
-| F-028 | Internal notes | Add private administrator notes | Must | Building Admin |
+| F-027 | Append-only request updates | Residents and Building Administrators add comments, photos, or both to non-terminal requests; no editing, deletion, threads, or chat | Must | Resident/Admin |
+| F-028 | Resident-visible request history | Record status transitions and priority changes in chronological history; keep administrative audit events separate | Must | System |
 | F-029 | Resolution | Record resolution and resolve request | Must | Building Admin |
 | F-030 | Duplicate merging | Merge duplicates while preserving history | Must | Building Admin |
-| F-031 | Shared master request | Share all resident-visible details of the master request with residents linked through duplicate merging, while protecting identities, duplicate submissions, internal notes, and audit data | Must | System |
+| F-031 | Shared master request | Share all resident-visible details of the master request with residents linked through duplicate merging, while protecting identities, duplicate submissions, and administrative audit data | Must | System |
 | F-032 | Notifications | Send request-related notifications | Must | System |
 | F-033 | Audit history | Record important administrative actions | Must | System |
 | F-034 | Building authorization | Enforce building-level data isolation | Supporting | System |
@@ -54,7 +54,7 @@
 | F-036 | Attachment authorization | Authorize attachment retrieval | Supporting | System |
 | F-037 | Historical preservation | Preserve contracts, assignments, and request history | Supporting | System |
 | F-038 | Automated testing | Test business rules and access controls | Supporting | Development |
-| F-039 | Observability | Structured logs and health checks | Supporting | Operations |
+| F-039 | Observability | Structured logs and health checks | Supporting | Operations |\n| F-040 | Urgent notification | Immediately email the Building Administrator when a request becomes Urgent | Must | System |\n| F-041 | Notification Outbox | Persist event and business change atomically; deliver asynchronously with retry and idempotency controls | Supporting | System |\n| F-042 | Notification monitoring | Building Administrator views delivery state and manually retries Failed notifications for their building | Must | Building Admin |
 
 ## 3. Excluded features
 
@@ -90,7 +90,7 @@
 - A maintenance request cannot be created without exactly one problem location.
 - A maintenance request cannot be associated with multiple problem locations.
 - Each resident account may hold multiple contracts, but each contract has exactly one holder.
-- Each photo must be JPEG, PNG, or WebP, no larger than 10 MB, with at most five photos per submission.
+- Each photo must be JPEG, PNG, or WebP and no larger than 10 MB; the original submission and each subsequent update may contain up to five photos.
 - Maintenance notifications use email for submission, approval/rejection, priority changes, work start, merge, and resolution.
 - A common-area location does not require an apartment reference.
 
@@ -124,7 +124,7 @@
 - Rejection requires an explanation.
 - Residents cannot edit the original submission after review begins.
 - Residents can still add supplementary updates.
-- Internal notes are never exposed through resident APIs or notifications.
+- Resident-visible request history is append-only; administrative audit events are never exposed through resident APIs or notifications.
 - Merging preserves original request IDs, histories, and attachments.
 - Shared progress must not expose other residents' private information.
 
