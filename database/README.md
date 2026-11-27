@@ -20,29 +20,6 @@ Current migrations:
 
 Migrations are applied in ascending numerical order.
 
-## Migration Rules
-
-1. Migrations execute in ascending numerical order.
-2. An applied migration must never be modified.
-3. Schema changes require a new migration.
-4. Every migration must be reviewed before execution.
-5. Destructive operations require explicit justification.
-6. Database constraints must enforce critical business invariants.
-7. All timestamps representing absolute points in time use `TIMESTAMPTZ`.
-8. Primary keys use UUID unless a documented exception exists.
-
-## Testing
-
-Migrations must be tested against PostgreSQL before being considered validated.
-
-A migration is not considered successful merely because its SQL file was created.
-
-## Rollback
-
-Rollback procedures must be documented for migrations that introduce changes requiring recovery.
-
-Production rollback must not destroy business records or historical data.
-
 ## Current Database Baseline
 
 The current MVP1 database foundation includes the following tables:
@@ -77,3 +54,26 @@ The current database has been inspected and the following properties verified:
 - The database has not yet completed a full automated migration-from-empty-database test.
 
 The schema baseline is structurally verified, subject to the limitations above.
+
+## Migration Rules
+
+1. Migrations execute in ascending numerical order.
+2. An applied migration must never be modified.
+3. Schema changes require a new migration.
+4. Every migration must be reviewed before execution.
+5. Destructive operations require explicit justification.
+6. Database constraints must enforce critical business invariants.
+7. All timestamps representing absolute points in time use `TIMESTAMPTZ`.
+8. Primary keys use UUID unless a documented exception exists.
+
+## Testing
+
+Migrations must be tested against PostgreSQL before being considered validated.
+
+A migration is not considered successful merely because its SQL file was created.
+
+## Rollback
+
+Rollback procedures must be documented for migrations that introduce changes requiring recovery.
+
+Production rollback must not destroy business records or historical data.
