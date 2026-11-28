@@ -14,9 +14,21 @@ WHERE name IS NULL
 ALTER TABLE buildings
 ALTER COLUMN name SET NOT NULL;
 
--- Reject empty or whitespace-only names.
-ALTER TABLE buildings
-ADD CONSTRAINT ck_buildings_name
-CHECK (length(btrim(name)) > 0);
+-- Add the validation constraint only if it is not already present.
+-- Migration 001 may already have created it in a fresh installation.
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'ck_buildings_name'
+          AND conrelid = 'public.buildings'::regclass
+    ) THEN
+        ALTER TABLE public.buildings
+        ADD CONSTRAINT ck_buildings_name
+        CHECK (length(btrim(name)) > 0);
+    END IF;
+END
+$$;
 
 COMMIT;
